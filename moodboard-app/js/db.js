@@ -31,20 +31,20 @@ const DB = (() => {
 
     return {
       async saveProject(p) {
-        const { error } = await sb().from(PROJECTS_T).upsert(p);
+        const { error } = await sb().from(PROJECTS_T).upsert({ id: p.id, data: p });
         if (error) throw error;
       },
 
       async getProject(id) {
-        const { data, error } = await sb().from(PROJECTS_T).select('*').eq('id', id).single();
+        const { data, error } = await sb().from(PROJECTS_T).select('data').eq('id', id).single();
         if (error) return null;
-        return data;
+        return data?.data || null;
       },
 
       async getAllProjects() {
-        const { data, error } = await sb().from(PROJECTS_T).select('*');
+        const { data, error } = await sb().from(PROJECTS_T).select('data');
         if (error) throw error;
-        return data || [];
+        return (data || []).map(row => row.data);
       },
 
       async deleteProject(id) {
