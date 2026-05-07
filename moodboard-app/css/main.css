@@ -1173,56 +1173,155 @@ button:active { transform: scale(0.97); }
 }
 
 /* ═══════════════════════════════════════════
-   FRAMER EMBED
+   UI COMPONENTS
 ═══════════════════════════════════════════ */
-.framer-url-bar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.framer-url-field {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.ui-form-wrap {
   background: var(--card);
   border: 0.5px solid var(--border2);
-  border-radius: var(--radius-sm);
-  padding: 0 14px;
-  color: var(--muted);
-  transition: border-color var(--transition);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 24px;
 }
-.framer-url-field:focus-within {
-  border-color: var(--accent);
-  color: var(--accent);
-}
+.ui-form-wrap.hidden { display: none; }
 
-.framer-url-input {
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  color: var(--text);
-  font-size: 13px;
-  padding: 10px 0;
-  flex: 1;
+.ui-comp-title-input {
   width: 100%;
+  background: var(--card2);
+  border: 0.5px solid var(--border2);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 14px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
 }
-.framer-url-input:focus { background: transparent; border: none; }
+.ui-comp-title-input:focus { border-color: var(--accent); }
 
-.framer-embed-wrap {
+.ui-form-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.ui-col-label {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.ui-comp-code {
+  width: 100%;
+  height: 240px;
+  background: var(--card2);
+  border: 0.5px solid var(--border2);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  padding: 12px;
+  resize: vertical;
+  line-height: 1.6;
+}
+.ui-comp-code:focus { border-color: var(--accent); }
+
+.ui-live-preview-wrap {
+  height: 240px;
+  background: var(--card2);
+  border: 0.5px solid var(--border2);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.ui-form-btns {
+  display: flex;
+  gap: 8px;
+}
+
+/* Component card */
+.ui-comp-card {
+  background: var(--card);
+  border: 0.5px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
-  border: 0.5px solid var(--border2);
-  background: var(--card2);
+  break-inside: avoid;
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 14px;
+  vertical-align: top;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.ui-comp-card:hover {
+  border-color: rgba(24,0,172,0.3);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
 }
 
-.framer-iframe {
+.ui-comp-preview {
   width: 100%;
-  height: 80vh;
+  background: #ffffff;
+  overflow: hidden;
+  position: relative;
+}
+
+.ui-comp-iframe {
+  width: 100%;
+  height: 220px;
   border: none;
   display: block;
+}
+
+.ui-comp-footer {
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-top: 0.5px solid var(--border);
+}
+
+.ui-comp-name {
+  flex: 1;
+  font-size: 12px;
+  color: var(--text2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ui-comp-code-btn,
+.ui-comp-delete-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity var(--transition), color var(--transition), background var(--transition);
+}
+.ui-comp-card:hover .ui-comp-code-btn,
+.ui-comp-card:hover .ui-comp-delete-btn { opacity: 1; }
+.ui-comp-code-btn:hover  { color: var(--accent); background: var(--accent-bg); }
+.ui-comp-delete-btn:hover { color: var(--danger); background: rgba(255,77,77,0.1); }
+
+.ui-comp-code-view {
+  border-top: 0.5px solid var(--border);
+  background: var(--card2);
+  max-height: 200px;
+  overflow: auto;
+}
+.ui-comp-code-view.hidden { display: none; }
+
+.ui-comp-code-pre {
+  padding: 14px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  color: var(--text2);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-all;
 }
 
 /* ═══════════════════════════════════════════
