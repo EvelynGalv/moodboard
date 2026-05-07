@@ -202,6 +202,7 @@ const Viewer = (() => {
       const iframe = card.querySelector('.ui-comp-iframe');
       iframe.dataset.uiId = comp.id;
       iframe.srcdoc = uiSrcdoc(comp.code || '', comp.id);
+      card.style.width = '202px';
       grid.appendChild(card);
     });
   }
@@ -213,7 +214,12 @@ const Viewer = (() => {
         const iframe = document.querySelector(`[data-ui-id="${e.data.uiId}"]`);
         if (iframe) {
           if (e.data.h) iframe.style.height = (e.data.h + 2) + 'px';
-          if (e.data.w) iframe.style.width  = (e.data.w + 2) + 'px';
+          if (e.data.w) {
+            const w = e.data.w + 2;
+            iframe.style.width = w + 'px';
+            const card = iframe.closest('.ui-comp-card');
+            if (card) card.style.width = w + 'px';
+          }
         }
       }
     });
