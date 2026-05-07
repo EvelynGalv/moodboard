@@ -127,7 +127,6 @@ const Dashboard = (() => {
       colors:        [],
       fonts:         [],
       uiComponents:  [],
-      framerUrl:     '',
     };
     await DB.saveProject(p);
     App.go('project', p.id);
@@ -261,7 +260,7 @@ const ProjectEditor = (() => {
     if (tab === 'product') renderImages('product');
     if (tab === 'colors')  renderColors();
     if (tab === 'fonts')   renderFonts();
-    if (tab === 'ui')      renderFramer();
+    if (tab === 'ui')      renderUIComponents();
   }
 
   /* ══════════════════════════════════════
@@ -314,26 +313,107 @@ const ProjectEditor = (() => {
   }
 
   /* ══════════════════════════════════════
-     FRAMER EMBED
+     UI COMPONENTS
   ══════════════════════════════════════ */
-  function renderFramer() {
-    const input   = qs('#framer-url-input');
-    const wrap    = qs('#framer-embed-wrap');
-    const iframe  = qs('#framer-iframe');
-    const empty   = qs('#ui-empty');
-    const url     = _project.framerUrl || '';
+  function uiSrcdoc(code) {
+    return `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+      *{box-sizing:border-box;margin:0;padding:0;}
+      body{background:transparent;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;font-family:system-ui,sans-serif;}
+    </style></head><body>${code}</body></html>`;
+  }
 
-    input.value = url;
+  function renderUIComponents() {
+    const grid    = qs('#ui-grid');
+    const emptyEl = qs('#ui-empty');
+    const items   = _project.uiComponents || [];
+    grid.innerHTML = '';
 
-    if (url) {
-      iframe.src = url;
-      show(wrap);
-      hide(empty);
-    } else {
-      iframe.src = '';
-      hide(wrap);
-      show(empty);
-    }
+    if (items.length === 0) { show(emptyEl); return; }
+    hide(emptyEl);
+
+    items.forEach(comp => {
+      const card = document.createElement('div');
+      card.className = 'ui-comp-card';
+      card.dataset.id = comp.id;
+      card.innerHTML = `
+        <div class="ui-comp-preview">
+          <iframe class="ui-comp-iframe" sandbox="allow-scripts" srcdoc="${comp.code.replace(/"/g, '&quot;')}"></iframe>
+        </div>
+        <div class="ui-comp-footer">
+          <span class="ui-comp-name">${comp.title || 'Sin título'}</span>
+          <button class="ui-comp-code-btn" data-toggle-code="${comp.id}" title="Ver/ocultar código">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </button>
+          <button class="ui-comp-delete-btn" data-delete-ui="${comp.id}" title="Eliminar">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+          </button>
+        </div>
+        <div class="ui-comp-code-view hidden" id="code-view-${comp.id}">
+          <pre class="ui-comp-code-pre"><code>${escapeHTML(comp.code)}</code></pre>
+        </div>`;
+      grid.appendChild(card);
+    });
+
+    /* Toggle code view */
+    grid.querySelectorAll('[data-toggle-code]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id  = btn.dataset.toggleCode;
+        const box = qs(`#code-view-${id}`);
+        box.classList.toggle('hidden');
+      });
+    });
+
+    /* Delete */
+    grid.querySelectorAll('[data-delete-ui]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.deleteUi;
+        const ok = await confirm('Eliminar componente', '¿Eliminar este componente?');
+        if (!ok) return;
+        _project.uiComponents = (_project.uiComponents || []).filter(x => x.id !== id);
+        await autoSave();
+        renderUIComponents();
+      });
+    });
+  }
+
+  function escapeHTML(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function initUIForm() {
+    const formWrap  = qs('#ui-form-wrap');
+    const codeInput = qs('#ui-comp-code');
+    const liveFrame = qs('#ui-live-iframe');
+    let debounce;
+
+    qs('#btn-add-ui').addEventListener('click', () => {
+      qs('#ui-comp-title').value = '';
+      codeInput.value = '';
+      liveFrame.srcdoc = '';
+      show(formWrap);
+      qs('#ui-comp-title').focus();
+    });
+
+    qs('#btn-cancel-ui').addEventListener('click', () => hide(formWrap));
+
+    codeInput.addEventListener('input', () => {
+      clearTimeout(debounce);
+      debounce = setTimeout(() => {
+        liveFrame.srcdoc = uiSrcdoc(codeInput.value);
+      }, 400);
+    });
+
+    qs('#btn-save-ui').addEventListener('click', async () => {
+      const title = qs('#ui-comp-title').value.trim();
+      const code  = codeInput.value.trim();
+      if (!code) return;
+      if (!_project.uiComponents) _project.uiComponents = [];
+      _project.uiComponents.push({ id: uid(), title, code });
+      await autoSave();
+      hide(formWrap);
+      renderUIComponents();
+      Toast.success('Componente guardado');
+    });
   }
 
   function wireImageEvents(type) {
@@ -634,20 +714,8 @@ const ProjectEditor = (() => {
     qs('#file-pages').addEventListener('change',   e => { addImages('pages',   Array.from(e.target.files)); e.target.value=''; });
     qs('#file-product').addEventListener('change', e => { addImages('product', Array.from(e.target.files)); e.target.value=''; });
 
-    /* Framer embed */
-    qs('#btn-load-framer').addEventListener('click', async () => {
-      const url = qs('#framer-url-input').value.trim();
-      if (!url) return;
-      _project.framerUrl = url;
-      await autoSave();
-      renderFramer();
-    });
-
-    qs('#btn-clear-framer').addEventListener('click', async () => {
-      _project.framerUrl = '';
-      await autoSave();
-      renderFramer();
-    });
+    /* UI components form */
+    initUIForm();
 
     /* Share link */
     qs('#btn-share-link').addEventListener('click', () => {
