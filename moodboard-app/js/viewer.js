@@ -33,7 +33,7 @@ const Viewer = (() => {
       product: (_project.productVisuals || []).length,
       colors:  (_project.colors || []).length,
       fonts:   (_project.fonts || []).length,
-      ui:      (_project.uiComponents || []).length,
+      ui:      _project.framerUrl ? 1 : 0,
     };
 
     qsa('.tab-btn', qs('#viewer-tabs-nav')).forEach(btn => {
@@ -64,7 +64,7 @@ const Viewer = (() => {
     if (tab === 'product') renderImages('product');
     if (tab === 'colors')  renderColors();
     if (tab === 'fonts')   renderFonts();
-    if (tab === 'ui')      renderImages('ui');
+    if (tab === 'ui')      renderFramer();
   }
 
   /* ── Images ────────────────────────────── */
@@ -168,6 +168,23 @@ const Viewer = (() => {
           <div class="font-prev-sm">ABCDEFGHIJKLMNOPQRSTUVWXYZ · abcdefghijklmnopqrstuvwxyz · 0123456789</div>
         </div>`;
       list.appendChild(card);
+    }
+  }
+
+  /* ── Framer embed ───────────────────────── */
+  function renderFramer() {
+    const wrap   = qs('#viewer-framer-wrap');
+    const iframe = qs('#viewer-framer-iframe');
+    const empty  = qs('#viewer-ui-empty');
+    const url    = _project.framerUrl || '';
+
+    if (url) {
+      iframe.src = url;
+      show(wrap);
+      hide(empty);
+    } else {
+      hide(wrap);
+      show(empty);
     }
   }
 
