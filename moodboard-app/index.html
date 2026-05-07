@@ -280,16 +280,21 @@
       <!-- UI COMPONENTS TAB -->
       <div id="tab-ui" class="tab-panel">
         <div class="tab-toolbar">
-          <span class="section-hint">Componentes de interfaz de referencia · Vista completa al hacer clic</span>
-          <button class="btn-add" id="btn-add-ui">
-            <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            Agregar
-          </button>
+          <span class="section-hint">Componentes interactivos · Diseñados en Framer</span>
         </div>
-        <input type="file" id="file-ui" class="file-input-hidden" accept="image/*" multiple>
-        <div class="images-grid auto-grid" id="ui-grid"></div>
-        <div class="tab-empty hidden" id="ui-empty">
-          <p>Agrega imágenes de componentes UI de referencia</p>
+        <div class="framer-url-bar">
+          <div class="framer-url-field">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+            <input type="url" id="framer-url-input" class="framer-url-input" placeholder="Pega aquí la URL pública de tu página de Framer…">
+          </div>
+          <button id="btn-load-framer" class="btn-accent-sm">Cargar</button>
+          <button id="btn-clear-framer" class="btn-ghost-sm">Limpiar</button>
+        </div>
+        <div id="framer-embed-wrap" class="framer-embed-wrap hidden">
+          <iframe id="framer-iframe" class="framer-iframe" src="" allowfullscreen></iframe>
+        </div>
+        <div class="tab-empty" id="ui-empty">
+          <p>Pega la URL de tu página de Framer para ver los componentes interactivos</p>
         </div>
       </div>
     </div>
@@ -340,8 +345,10 @@
         <div class="tab-empty hidden" id="viewer-fonts-empty"><p>Sin tipografías definidas</p></div>
       </div>
       <div id="vtab-ui" class="tab-panel">
-        <div class="images-grid auto-grid" id="viewer-ui-grid"></div>
-        <div class="tab-empty hidden" id="viewer-ui-empty"><p>Sin imágenes en esta sección</p></div>
+        <div id="viewer-framer-wrap" class="framer-embed-wrap hidden">
+          <iframe id="viewer-framer-iframe" class="framer-iframe" src="" allowfullscreen></iframe>
+        </div>
+        <div class="tab-empty hidden" id="viewer-ui-empty"><p>Sin componentes definidos</p></div>
       </div>
     </div>
 
