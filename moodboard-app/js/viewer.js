@@ -33,7 +33,7 @@ const Viewer = (() => {
       product: (_project.productVisuals || []).length,
       colors:  (_project.colors || []).length,
       fonts:   (_project.fonts || []).length,
-      ui:      _project.framerUrl ? 1 : 0,
+      ui:      (_project.uiComponents || []).length,
     };
 
     qsa('.tab-btn', qs('#viewer-tabs-nav')).forEach(btn => {
@@ -64,7 +64,7 @@ const Viewer = (() => {
     if (tab === 'product') renderImages('product');
     if (tab === 'colors')  renderColors();
     if (tab === 'fonts')   renderFonts();
-    if (tab === 'ui')      renderFramer();
+    if (tab === 'ui')      renderUIComponents();
   }
 
   /* ── Images ────────────────────────────── */
@@ -171,21 +171,35 @@ const Viewer = (() => {
     }
   }
 
-  /* ── Framer embed ───────────────────────── */
-  function renderFramer() {
-    const wrap   = qs('#viewer-framer-wrap');
-    const iframe = qs('#viewer-framer-iframe');
-    const empty  = qs('#viewer-ui-empty');
-    const url    = _project.framerUrl || '';
+  /* ── UI Components ──────────────────────── */
+  function uiSrcdoc(code) {
+    return `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+      *{box-sizing:border-box;margin:0;padding:0;}
+      body{background:transparent;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;font-family:system-ui,sans-serif;}
+    </style></head><body>${code}</body></html>`;
+  }
 
-    if (url) {
-      iframe.src = url;
-      show(wrap);
-      hide(empty);
-    } else {
-      hide(wrap);
-      show(empty);
-    }
+  function renderUIComponents() {
+    const grid    = qs('#viewer-ui-grid');
+    const emptyEl = qs('#viewer-ui-empty');
+    const items   = _project.uiComponents || [];
+    grid.innerHTML = '';
+
+    if (items.length === 0) { show(emptyEl); return; }
+    hide(emptyEl);
+
+    items.forEach(comp => {
+      const card = document.createElement('div');
+      card.className = 'ui-comp-card';
+      card.innerHTML = `
+        <div class="ui-comp-preview">
+          <iframe class="ui-comp-iframe" sandbox="allow-scripts" srcdoc="${comp.code.replace(/"/g, '&quot;')}"></iframe>
+        </div>
+        <div class="ui-comp-footer">
+          <span class="ui-comp-name">${comp.title || 'Sin título'}</span>
+        </div>`;
+      grid.appendChild(card);
+    });
   }
 
   /* ── Init events ─────────────────────────── */
