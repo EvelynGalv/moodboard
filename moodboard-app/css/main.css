@@ -1271,9 +1271,10 @@ button:active { transform: scale(0.97); }
 
 .ui-comp-iframe {
   width: 100%;
-  height: 560px;
+  height: 60px;
   border: none;
   display: block;
+  transition: height 0.2s ease;
 }
 
 .ui-comp-footer {
