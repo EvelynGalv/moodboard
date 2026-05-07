@@ -315,11 +315,11 @@ const ProjectEditor = (() => {
   /* ══════════════════════════════════════
      UI COMPONENTS
   ══════════════════════════════════════ */
-  function uiSrcdoc(code) {
+  function uiSrcdoc(code, id) {
     return `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
       *{box-sizing:border-box;margin:0;padding:0;}
       body{background:#fff;font-family:system-ui,sans-serif;}
-    </style></head><body>${code}</body></html>`;
+    </style></head><body>${code}<script>(function(){function s(){parent.postMessage({uiId:'${id}',h:document.body.scrollHeight},'*');}window.addEventListener('load',s);setTimeout(s,400);})();<\/script></body></html>`;
   }
 
   function renderUIComponents() {
@@ -353,7 +353,9 @@ const ProjectEditor = (() => {
           <pre class="ui-comp-code-pre"><code>${escapeHTML(comp.code || '')}</code></pre>
         </div>`;
 
-      card.querySelector('.ui-comp-iframe').srcdoc = uiSrcdoc(comp.code || '');
+      const iframe = card.querySelector('.ui-comp-iframe');
+      iframe.dataset.uiId = comp.id;
+      iframe.srcdoc = uiSrcdoc(comp.code || '', comp.id);
       grid.appendChild(card);
     });
 
@@ -716,6 +718,14 @@ const ProjectEditor = (() => {
 
     qs('#file-pages').addEventListener('change',   e => { addImages('pages',   Array.from(e.target.files)); e.target.value=''; });
     qs('#file-product').addEventListener('change', e => { addImages('product', Array.from(e.target.files)); e.target.value=''; });
+
+    /* UI iframe auto-resize */
+    window.addEventListener('message', e => {
+      if (e.data?.uiId) {
+        const iframe = document.querySelector(`[data-ui-id="${e.data.uiId}"]`);
+        if (iframe) iframe.style.height = (e.data.h + 2) + 'px';
+      }
+    });
 
     /* UI components form */
     initUIForm();
