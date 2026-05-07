@@ -1249,14 +1249,13 @@ button:active { transform: scale(0.97); }
   columns: unset;
 }
 
-/* Component card */
+/* Component card — width set by JS via postMessage */
 .ui-comp-card {
   background: var(--card);
   border: 0.5px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
   flex: 0 0 auto;
-  width: fit-content;
   min-width: 180px;
   max-width: 100%;
   transition: border-color var(--transition), box-shadow var(--transition);
