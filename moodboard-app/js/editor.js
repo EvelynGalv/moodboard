@@ -328,10 +328,11 @@ const ProjectEditor = (() => {
     const items   = _project.uiComponents || [];
     grid.innerHTML = '';
 
-    if (items.length === 0) { show(emptyEl); return; }
+    const validItems = items.filter(c => c.code);
+    if (validItems.length === 0) { show(emptyEl); return; }
     hide(emptyEl);
 
-    items.forEach(comp => {
+    validItems.forEach(comp => {
       const card = document.createElement('div');
       card.className = 'ui-comp-card';
       card.dataset.id = comp.id;
@@ -349,10 +350,10 @@ const ProjectEditor = (() => {
           </button>
         </div>
         <div class="ui-comp-code-view hidden" id="code-view-${comp.id}">
-          <pre class="ui-comp-code-pre"><code>${escapeHTML(comp.code)}</code></pre>
+          <pre class="ui-comp-code-pre"><code>${escapeHTML(comp.code || '')}</code></pre>
         </div>`;
 
-      card.querySelector('.ui-comp-iframe').srcdoc = uiSrcdoc(comp.code);
+      card.querySelector('.ui-comp-iframe').srcdoc = uiSrcdoc(comp.code || '');
       grid.appendChild(card);
     });
 
