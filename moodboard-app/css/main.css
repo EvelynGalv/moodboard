@@ -1239,13 +1239,11 @@ button:active { transform: scale(0.97); }
   gap: 8px;
 }
 
-/* UI grid — single column vertical */
+/* UI grid — masonry */
 #ui-grid,
 #viewer-ui-grid {
-  columns: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+  columns: 3 280px;
+  column-gap: 14px;
 }
 
 /* Component card */
@@ -1254,7 +1252,11 @@ button:active { transform: scale(0.97); }
   border: 0.5px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
+  break-inside: avoid;
+  display: inline-block;
   width: 100%;
+  margin-bottom: 14px;
+  vertical-align: top;
   transition: border-color var(--transition), box-shadow var(--transition);
 }
 .ui-comp-card:hover {
@@ -1264,7 +1266,7 @@ button:active { transform: scale(0.97); }
 
 .ui-comp-preview {
   width: 100%;
-  background: #ffffff;
+  background: #f8f8f8;
   overflow: hidden;
   position: relative;
 }
