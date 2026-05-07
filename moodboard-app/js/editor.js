@@ -127,6 +127,7 @@ const Dashboard = (() => {
       colors:        [],
       fonts:         [],
       uiComponents:  [],
+      framerUrl:     '',
     };
     await DB.saveProject(p);
     App.go('project', p.id);
@@ -260,7 +261,7 @@ const ProjectEditor = (() => {
     if (tab === 'product') renderImages('product');
     if (tab === 'colors')  renderColors();
     if (tab === 'fonts')   renderFonts();
-    if (tab === 'ui')      renderImages('ui');
+    if (tab === 'ui')      renderFramer();
   }
 
   /* ══════════════════════════════════════
@@ -310,6 +311,29 @@ const ProjectEditor = (() => {
     }
 
     wireImageEvents(type);
+  }
+
+  /* ══════════════════════════════════════
+     FRAMER EMBED
+  ══════════════════════════════════════ */
+  function renderFramer() {
+    const input   = qs('#framer-url-input');
+    const wrap    = qs('#framer-embed-wrap');
+    const iframe  = qs('#framer-iframe');
+    const empty   = qs('#ui-empty');
+    const url     = _project.framerUrl || '';
+
+    input.value = url;
+
+    if (url) {
+      iframe.src = url;
+      show(wrap);
+      hide(empty);
+    } else {
+      iframe.src = '';
+      hide(wrap);
+      show(empty);
+    }
   }
 
   function wireImageEvents(type) {
@@ -606,11 +630,24 @@ const ProjectEditor = (() => {
     /* File inputs */
     qs('#btn-add-page').addEventListener('click',    () => qs('#file-pages').click());
     qs('#btn-add-product').addEventListener('click', () => qs('#file-product').click());
-    qs('#btn-add-ui').addEventListener('click',      () => qs('#file-ui').click());
 
     qs('#file-pages').addEventListener('change',   e => { addImages('pages',   Array.from(e.target.files)); e.target.value=''; });
     qs('#file-product').addEventListener('change', e => { addImages('product', Array.from(e.target.files)); e.target.value=''; });
-    qs('#file-ui').addEventListener('change',      e => { addImages('ui',      Array.from(e.target.files)); e.target.value=''; });
+
+    /* Framer embed */
+    qs('#btn-load-framer').addEventListener('click', async () => {
+      const url = qs('#framer-url-input').value.trim();
+      if (!url) return;
+      _project.framerUrl = url;
+      await autoSave();
+      renderFramer();
+    });
+
+    qs('#btn-clear-framer').addEventListener('click', async () => {
+      _project.framerUrl = '';
+      await autoSave();
+      renderFramer();
+    });
 
     /* Share link */
     qs('#btn-share-link').addEventListener('click', () => {
