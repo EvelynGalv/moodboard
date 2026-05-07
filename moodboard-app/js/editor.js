@@ -337,10 +337,10 @@ const ProjectEditor = (() => {
       card.dataset.id = comp.id;
       card.innerHTML = `
         <div class="ui-comp-preview">
-          <iframe class="ui-comp-iframe" sandbox="allow-scripts" srcdoc="${comp.code.replace(/"/g, '&quot;')}"></iframe>
+          <iframe class="ui-comp-iframe" sandbox="allow-scripts"></iframe>
         </div>
         <div class="ui-comp-footer">
-          <span class="ui-comp-name">${comp.title || 'Sin título'}</span>
+          <span class="ui-comp-name">${escapeHTML(comp.title || 'Sin título')}</span>
           <button class="ui-comp-code-btn" data-toggle-code="${comp.id}" title="Ver/ocultar código">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
           </button>
@@ -351,6 +351,8 @@ const ProjectEditor = (() => {
         <div class="ui-comp-code-view hidden" id="code-view-${comp.id}">
           <pre class="ui-comp-code-pre"><code>${escapeHTML(comp.code)}</code></pre>
         </div>`;
+
+      card.querySelector('.ui-comp-iframe').srcdoc = uiSrcdoc(comp.code);
       grid.appendChild(card);
     });
 
