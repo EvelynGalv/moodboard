@@ -193,11 +193,12 @@ const Viewer = (() => {
       card.className = 'ui-comp-card';
       card.innerHTML = `
         <div class="ui-comp-preview">
-          <iframe class="ui-comp-iframe" sandbox="allow-scripts" srcdoc="${comp.code.replace(/"/g, '&quot;')}"></iframe>
+          <iframe class="ui-comp-iframe" sandbox="allow-scripts"></iframe>
         </div>
         <div class="ui-comp-footer">
           <span class="ui-comp-name">${comp.title || 'Sin título'}</span>
         </div>`;
+      card.querySelector('.ui-comp-iframe').srcdoc = uiSrcdoc(comp.code);
       grid.appendChild(card);
     });
   }
