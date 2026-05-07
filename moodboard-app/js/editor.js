@@ -318,7 +318,7 @@ const ProjectEditor = (() => {
   function uiSrcdoc(code) {
     return `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
       *{box-sizing:border-box;margin:0;padding:0;}
-      body{background:transparent;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;font-family:system-ui,sans-serif;}
+      body{background:#fff;font-family:system-ui,sans-serif;}
     </style></head><body>${code}</body></html>`;
   }
 
