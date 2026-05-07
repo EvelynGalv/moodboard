@@ -316,10 +316,7 @@ const ProjectEditor = (() => {
      UI COMPONENTS
   ══════════════════════════════════════ */
   function uiSrcdoc(code, id) {
-    return `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
-      *{box-sizing:border-box;margin:0;padding:0;}
-      body{background:#fff;font-family:system-ui,sans-serif;}
-    </style></head><body>${code}<script>(function(){function s(){var prev=document.body.style.display;document.body.style.display='inline-block';var w=document.body.offsetWidth;var h=document.body.offsetHeight;document.body.style.display=prev||'';parent.postMessage({uiId:'${id}',h:h,w:w},'*');}window.addEventListener('load',s);setTimeout(s,400);})();<\/script></body></html>`;
+    return `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>*{box-sizing:border-box;margin:0;padding:0;}body{background:#fff;font-family:system-ui,sans-serif;}#_m{display:inline-block;vertical-align:top;}</style></head><body><div id="_m">${code}</div><script>(function(){function s(){var el=document.getElementById('_m');if(!el)return;parent.postMessage({uiId:'${id}',h:el.offsetHeight,w:el.offsetWidth},'*');}window.addEventListener('load',s);setTimeout(s,400);setTimeout(s,1200);})();<\/script></body></html>`;
   }
 
   function renderUIComponents() {
