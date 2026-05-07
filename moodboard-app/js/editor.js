@@ -319,7 +319,7 @@ const ProjectEditor = (() => {
     return `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
       *{box-sizing:border-box;margin:0;padding:0;}
       body{background:#fff;font-family:system-ui,sans-serif;}
-    </style></head><body>${code}<script>(function(){function s(){parent.postMessage({uiId:'${id}',h:document.body.scrollHeight},'*');}window.addEventListener('load',s);setTimeout(s,400);})();<\/script></body></html>`;
+    </style></head><body>${code}<script>(function(){function s(){var prev=document.body.style.display;document.body.style.display='inline-block';var w=document.body.offsetWidth;var h=document.body.offsetHeight;document.body.style.display=prev||'';parent.postMessage({uiId:'${id}',h:h,w:w},'*');}window.addEventListener('load',s);setTimeout(s,400);})();<\/script></body></html>`;
   }
 
   function renderUIComponents() {
@@ -723,7 +723,10 @@ const ProjectEditor = (() => {
     window.addEventListener('message', e => {
       if (e.data?.uiId) {
         const iframe = document.querySelector(`[data-ui-id="${e.data.uiId}"]`);
-        if (iframe) iframe.style.height = (e.data.h + 2) + 'px';
+        if (iframe) {
+          if (e.data.h) iframe.style.height = (e.data.h + 2) + 'px';
+          if (e.data.w) iframe.style.width  = (e.data.w + 2) + 'px';
+        }
       }
     });
 
