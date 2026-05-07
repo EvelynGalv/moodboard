@@ -185,10 +185,11 @@ const Viewer = (() => {
     const items   = _project.uiComponents || [];
     grid.innerHTML = '';
 
-    if (items.length === 0) { show(emptyEl); return; }
+    const validItems = items.filter(c => c.code);
+    if (validItems.length === 0) { show(emptyEl); return; }
     hide(emptyEl);
 
-    items.forEach(comp => {
+    validItems.forEach(comp => {
       const card = document.createElement('div');
       card.className = 'ui-comp-card';
       card.innerHTML = `
@@ -198,7 +199,7 @@ const Viewer = (() => {
         <div class="ui-comp-footer">
           <span class="ui-comp-name">${comp.title || 'Sin título'}</span>
         </div>`;
-      card.querySelector('.ui-comp-iframe').srcdoc = uiSrcdoc(comp.code);
+      card.querySelector('.ui-comp-iframe').srcdoc = uiSrcdoc(comp.code || '');
       grid.appendChild(card);
     });
   }
