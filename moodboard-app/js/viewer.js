@@ -172,11 +172,11 @@ const Viewer = (() => {
   }
 
   /* ── UI Components ──────────────────────── */
-  function uiSrcdoc(code) {
+  function uiSrcdoc(code, id) {
     return `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
       *{box-sizing:border-box;margin:0;padding:0;}
       body{background:#fff;font-family:system-ui,sans-serif;}
-    </style></head><body>${code}</body></html>`;
+    </style></head><body>${code}<script>(function(){function s(){parent.postMessage({uiId:'${id}',h:document.body.scrollHeight},'*');}window.addEventListener('load',s);setTimeout(s,400);})();<\/script></body></html>`;
   }
 
   function renderUIComponents() {
@@ -199,13 +199,22 @@ const Viewer = (() => {
         <div class="ui-comp-footer">
           <span class="ui-comp-name">${comp.title || 'Sin título'}</span>
         </div>`;
-      card.querySelector('.ui-comp-iframe').srcdoc = uiSrcdoc(comp.code || '');
+      const iframe = card.querySelector('.ui-comp-iframe');
+      iframe.dataset.uiId = comp.id;
+      iframe.srcdoc = uiSrcdoc(comp.code || '', comp.id);
       grid.appendChild(card);
     });
   }
 
   /* ── Init events ─────────────────────────── */
   function initEvents() {
+    window.addEventListener('message', e => {
+      if (e.data?.uiId) {
+        const iframe = document.querySelector(`[data-ui-id="${e.data.uiId}"]`);
+        if (iframe) iframe.style.height = (e.data.h + 2) + 'px';
+      }
+    });
+
     qs('#viewer-tabs-nav').addEventListener('click', e => {
       const btn = e.target.closest('.tab-btn');
       if (btn && btn.dataset.vtab) renderTab(btn.dataset.vtab);
