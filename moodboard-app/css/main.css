@@ -1267,7 +1267,6 @@ button:active { transform: scale(0.97); }
 }
 
 .ui-comp-preview {
-  width: 100%;
   background: #f8f8f8;
   overflow: hidden;
   position: relative;
