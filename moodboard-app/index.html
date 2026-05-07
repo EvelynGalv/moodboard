@@ -280,21 +280,36 @@
       <!-- UI COMPONENTS TAB -->
       <div id="tab-ui" class="tab-panel">
         <div class="tab-toolbar">
-          <span class="section-hint">Componentes interactivos · Diseñados en Framer</span>
+          <span class="section-hint">Componentes UI · Pega HTML+CSS para ver el preview interactivo</span>
+          <button class="btn-add" id="btn-add-ui">
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            Agregar
+          </button>
         </div>
-        <div class="framer-url-bar">
-          <div class="framer-url-field">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
-            <input type="url" id="framer-url-input" class="framer-url-input" placeholder="Pega aquí la URL pública de tu página de Framer…">
+        <div id="ui-form-wrap" class="ui-form-wrap hidden">
+          <div class="ui-form-inner">
+            <input type="text" id="ui-comp-title" class="ui-comp-title-input" placeholder="Nombre del componente (ej: Button Primary)" maxlength="80">
+            <div class="ui-form-cols">
+              <div class="ui-code-col">
+                <p class="ui-col-label">HTML + CSS</p>
+                <textarea id="ui-comp-code" class="ui-comp-code" placeholder="Pega aquí el código HTML y CSS del componente…" spellcheck="false"></textarea>
+              </div>
+              <div class="ui-preview-col">
+                <p class="ui-col-label">Preview en vivo</p>
+                <div class="ui-live-preview-wrap">
+                  <iframe id="ui-live-iframe" class="ui-comp-iframe" sandbox="allow-scripts"></iframe>
+                </div>
+              </div>
+            </div>
+            <div class="ui-form-btns">
+              <button class="btn-accent-sm" id="btn-save-ui">Guardar componente</button>
+              <button class="btn-ghost-sm" id="btn-cancel-ui">Cancelar</button>
+            </div>
           </div>
-          <button id="btn-load-framer" class="btn-accent-sm">Cargar</button>
-          <button id="btn-clear-framer" class="btn-ghost-sm">Limpiar</button>
         </div>
-        <div id="framer-embed-wrap" class="framer-embed-wrap hidden">
-          <iframe id="framer-iframe" class="framer-iframe" src="" allowfullscreen></iframe>
-        </div>
-        <div class="tab-empty" id="ui-empty">
-          <p>Pega la URL de tu página de Framer para ver los componentes interactivos</p>
+        <div class="images-grid" id="ui-grid"></div>
+        <div class="tab-empty hidden" id="ui-empty">
+          <p>Agrega componentes UI con su código HTML+CSS</p>
         </div>
       </div>
     </div>
@@ -345,9 +360,7 @@
         <div class="tab-empty hidden" id="viewer-fonts-empty"><p>Sin tipografías definidas</p></div>
       </div>
       <div id="vtab-ui" class="tab-panel">
-        <div id="viewer-framer-wrap" class="framer-embed-wrap hidden">
-          <iframe id="viewer-framer-iframe" class="framer-iframe" src="" allowfullscreen></iframe>
-        </div>
+        <div class="images-grid" id="viewer-ui-grid"></div>
         <div class="tab-empty hidden" id="viewer-ui-empty"><p>Sin componentes definidos</p></div>
       </div>
     </div>
