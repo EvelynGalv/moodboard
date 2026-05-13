@@ -316,7 +316,7 @@ const ProjectEditor = (() => {
      UI COMPONENTS
   ══════════════════════════════════════ */
   function uiSrcdoc(code, id) {
-    return `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>*{box-sizing:border-box;margin:0;padding:0;}body{background:#fff;font-family:system-ui,sans-serif;}#_m{display:inline-block;vertical-align:top;}</style></head><body><div id="_m">${code}</div><script>(function(){function s(){var el=document.getElementById('_m');if(!el)return;parent.postMessage({uiId:'${id}',h:el.offsetHeight,w:el.offsetWidth},'*');}window.addEventListener('load',s);setTimeout(s,400);setTimeout(s,1200);})();<\/script></body></html>`;
+    return `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>*{box-sizing:border-box;margin:0;padding:0;}body{background:#fff;font-family:system-ui,sans-serif;}</style></head><body>${code}<script>(function(){function s(){var h=Math.max(document.body.scrollHeight,document.documentElement.scrollHeight);parent.postMessage({uiId:'${id}',h:h},'*');}window.addEventListener('load',s);setTimeout(s,400);setTimeout(s,1200);})();<\/script></body></html>`;
   }
 
   function renderUIComponents() {
@@ -336,6 +336,11 @@ const ProjectEditor = (() => {
       card.innerHTML = `
         <div class="ui-comp-preview">
           <iframe class="ui-comp-iframe" sandbox="allow-scripts"></iframe>
+          <div class="img-card-overlay">
+            <div class="img-overlay-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+            </div>
+          </div>
         </div>
         <div class="ui-comp-footer">
           <span class="ui-comp-name">${escapeHTML(comp.title || 'Sin título')}</span>
@@ -353,7 +358,11 @@ const ProjectEditor = (() => {
       const iframe = card.querySelector('.ui-comp-iframe');
       iframe.dataset.uiId = comp.id;
       iframe.srcdoc = uiSrcdoc(comp.code || '', comp.id);
-      card.style.width = '202px';
+
+      card.querySelector('.ui-comp-preview').addEventListener('click', () => {
+        UILightbox.open(comp.code || '', comp.title || 'Sin título');
+      });
+
       grid.appendChild(card);
     });
 
@@ -717,19 +726,11 @@ const ProjectEditor = (() => {
     qs('#file-pages').addEventListener('change',   e => { addImages('pages',   Array.from(e.target.files)); e.target.value=''; });
     qs('#file-product').addEventListener('change', e => { addImages('product', Array.from(e.target.files)); e.target.value=''; });
 
-    /* UI iframe auto-resize */
+    /* UI iframe auto-resize (height only — width fills column) */
     window.addEventListener('message', e => {
       if (e.data?.uiId) {
         const iframe = document.querySelector(`[data-ui-id="${e.data.uiId}"]`);
-        if (iframe) {
-          if (e.data.h) iframe.style.height = (e.data.h + 2) + 'px';
-          if (e.data.w) {
-            const w = e.data.w + 2;
-            iframe.style.width = w + 'px';
-            const card = iframe.closest('.ui-comp-card');
-            if (card) card.style.width = w + 'px';
-          }
-        }
+        if (iframe && e.data.h) iframe.style.height = (e.data.h + 1) + 'px';
       }
     });
 
