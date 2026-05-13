@@ -1255,8 +1255,10 @@ button:active { transform: scale(0.97); }
   border: 0.5px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
-  display: block;
-  width: 100%;
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
   transition: border-color var(--transition), box-shadow var(--transition);
 }
 .ui-comp-card:hover {
@@ -1265,7 +1267,8 @@ button:active { transform: scale(0.97); }
 }
 
 .ui-comp-preview {
-  width: 100%;
+  width: 100% !important;
+  max-width: 100% !important;
   background: #f8f8f8;
   overflow: hidden;
   position: relative;
@@ -1275,7 +1278,8 @@ button:active { transform: scale(0.97); }
 .ui-comp-card:hover .ui-comp-preview .img-card-overlay { opacity: 1; }
 
 .ui-comp-iframe {
-  width: 100%;
+  width: 100% !important;
+  max-width: 100% !important;
   height: 60px;
   border: none;
   display: block;
