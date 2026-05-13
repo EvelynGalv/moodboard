@@ -139,6 +139,7 @@ function initLoginForm() {
 document.addEventListener('DOMContentLoaded', () => {
   /* Init utilities */
   Lightbox.init();
+  UILightbox.init();
 
   /* Init forms and event handlers */
   initSetupForm();
