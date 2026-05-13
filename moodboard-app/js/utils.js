@@ -245,3 +245,47 @@ async function copyToClipboard(text) {
     return ok;
   }
 }
+
+/* ── UI Component Lightbox ───────────────── */
+const UILightbox = (() => {
+  const lb    = () => document.getElementById('ui-lightbox');
+  const frame = () => document.getElementById('ui-lb-iframe');
+  const title = () => document.getElementById('ui-lb-title');
+
+  function srcdoc(code) {
+    return `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>*{box-sizing:border-box;margin:0;padding:0;}body{background:#fff;font-family:system-ui,sans-serif;}#_m{display:inline-block;vertical-align:top;}</style></head><body><div id="_m">${code}</div><script>(function(){function s(){var el=document.getElementById('_m');if(!el)return;parent.postMessage({uiLb:1,h:el.offsetHeight,w:el.offsetWidth},'*');}window.addEventListener('load',s);setTimeout(s,400);setTimeout(s,1200);})();<\/script></body></html>`;
+  }
+
+  function open(code, label) {
+    title().textContent = label || 'Componente';
+    const f = frame();
+    f.style.height = '80px';
+    f.style.width  = '320px';
+    f.srcdoc = srcdoc(code);
+    lb().classList.remove('hidden');
+  }
+
+  function close() {
+    lb().classList.add('hidden');
+    frame().srcdoc = '';
+  }
+
+  function init() {
+    document.getElementById('ui-lb-close').addEventListener('click', close);
+    document.getElementById('ui-lightbox').addEventListener('click', e => {
+      if (e.target === e.currentTarget) close();
+    });
+    document.addEventListener('keydown', e => {
+      if (!lb().classList.contains('hidden') && e.key === 'Escape') close();
+    });
+    window.addEventListener('message', e => {
+      if (e.data?.uiLb) {
+        const f = frame();
+        if (e.data.h) f.style.height = (e.data.h + 1) + 'px';
+        if (e.data.w) f.style.width  = (e.data.w + 1) + 'px';
+      }
+    });
+  }
+
+  return { init, open, close };
+})();
